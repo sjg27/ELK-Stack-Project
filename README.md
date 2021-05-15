@@ -26,15 +26,17 @@ This document contains the following details:
 The main purpose of this network is to expose a load-balanced and monitored instance of DVWA, the D*mn Vulnerable Web Application.
 
 Load balancing ensures that the application will be highly persistent, in addition to restricting access to the network.
+
 - It protects against Denial of Service attacks and mass influx of traffic.
+
 - One advantage of a jump box is that it's a gateway this a point to have a firewall to keep out anyone that does not belong there.
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the metrics and system logs.
+
 - Filebeat monitors the log files or locations that you specify, collects log events, and forwards them either to Elasticsearch or Logstash for indexing.
 - Metricbeat collects machine metrics, such as uptime.
 
 The configuration details of each machine may be found below.
-_Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdown_tables) to add/remove values from the table_.
 
 | Name     | Function | IP Address | Operating System |
 |----------|----------|------------|------------------|
@@ -43,6 +45,7 @@ _Note: Use the [Markdown Table Generator](http://www.tablesgenerator.com/markdow
 | Web-2    | DVWA     | 10.0.0.6   | Linux            |
 | Web-3    | DVWA     | 10.0.0.7   | Linux            |
 | ELK      | Kibana   | 10.1.0.4   | Linux            |
+
 ### Access Policies
 
 The machines on the internal network are not exposed to the public Internet. 
@@ -52,6 +55,7 @@ Only the virtual machine can accept connections from the Internet. Access to thi
 - 173.3.8.222
 
 Machines within the network can only be accessed by SSH.
+
 - My local machine is able to access the ELK VM and Web VM through the container within the Jump-Box-Provisioner VM.
 ..* 173.3.8.222
 
@@ -68,9 +72,11 @@ A summary of the access policies in place can be found in the table below.
 ### Elk Configuration
 
 Ansible was used to automate configuration of the ELK machine. No configuration was performed manually, which is advantageous because...
+
 - Infrastructure as Code allows us to reuse the same code to across multiple devices without needing to waste time logging into each device. 
 
 The playbook implements the following tasks:
+
 - Install Docker
 - Install Python3-Pip
 - Install Docker module
@@ -79,29 +85,43 @@ The playbook implements the following tasks:
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-(/Images/docker_ps.png)
+/Images/docker_ps.png
 
 ### Target Machines & Beats
 This ELK server is configured to monitor the following machines:
-- _TODO: List the IP addresses of the machines you are monitoring_
+
+- 10.0.0.5
+- 10.0.0.6
+- 10.0.0.7
 
 We have installed the following Beats on these machines:
-- _TODO: Specify which Beats you successfully installed_
+
+- Filebeat was installed on these VMs:
+..- Web-1
+..- Web-2
+..- Web-3
+
+- Metricbeat was installed on these VMs:
+..- Web-1
+..- Web-2
+..- Web-3
 
 These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs, which we use to track user logon events, etc._
+
+- Filebeats monitors and collects log files, then forwards it to Elasticsearch or Logstash. For example, if someone was trying to SSH into one of the Web VMs, Filebeat will record if they were successful or not and the IP address they accessed from. 
+
+- Metricbeat collects the metrics and statistics and forwards them to Elasticsearch or Logstash. For example, it can track how much the CPU is being used and how many requests are coming through the site
 
 ### Using the Playbook
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
 
 SSH into the control node and follow the steps below:
-- Copy the _____ file to _____.
+- Copy the yaml file to the roles folder.
 - Update the hosts file to include the internal IP of Web VMs.
-- Run the playbook, and navigate to ____ to check that the installation worked as expected.
+- Run the playbook, and navigate to the ELK VM to check that the installation worked as expected.
 
-_TODO: Answer the following questions to fill in the blanks:_
-- _Which file is the playbook? Where do you copy it?_
-- _Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on?_
-- _Which URL do you navigate to in order to check that the ELK server is running?
-
-_As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
+- install-elk.yml
+- Move this file to the roles folder
+- The hosts file under /etc/ansible allows you to create groups and place the internal IPs of a VM.
+..- In the yaml file you specify which host will be affected by this file.
+- http://your.ELK.VM.IP:5601/app/kibana
